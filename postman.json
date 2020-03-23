@@ -1,0 +1,488 @@
+{
+	"info": {
+		"_postman_id": "f45fcebd-a5be-4b53-8aad-65386c1d1462",
+		"name": "Keycloak",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "call unsecured",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f4958a13-0a75-4bc6-8718-8de5556c89b3",
+						"exec": [
+							"pm.test(\"http status is 200 \", function() {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer {{local_token_admin}}",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/unsecured",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"unsecured"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Token admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7f73d423-3ad7-440e-bdd3-2b8cd1f0ecc0",
+						"exec": [
+							"pm.test(\"http status is 200 \", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"let jsonData = pm.response.json();",
+							"postman.setEnvironmentVariable(\"local_token_admin\", jsonData.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "regis-admin",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "regis",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "regis-web",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "7bd76f37-e712-483c-82ba-5d1c337baa68",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8090/auth/realms/regis-realm/protocol/openid-connect/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"auth",
+						"realms",
+						"regis-realm",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "call admin with user 'admin'",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f4958a13-0a75-4bc6-8718-8de5556c89b3",
+						"exec": [
+							"pm.test(\"http status is 200 \", function() {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{local_token_admin}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/admin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "call user with user 'admin'",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8de01d04-e742-4086-b1be-34fe906ddfee",
+						"exec": [
+							"pm.test(\"http status is 403 \", function() {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"function cleanup() {",
+							"    const clean = _.keys(pm.environment.toObject())",
+							"    _.each(clean, (arrItem) => {",
+							"        if (arrItem.startsWith(\"local_\")) {",
+							"            pm.environment.unset(arrItem)",
+							"        }",
+							"    })",
+							"}",
+							"",
+							"cleanup();"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer {{local_token_admin}}"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Token viewer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7f73d423-3ad7-440e-bdd3-2b8cd1f0ecc0",
+						"exec": [
+							"pm.test(\"http status is 200 \", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"let jsonData = pm.response.json();",
+							"postman.setEnvironmentVariable(\"local_token_viewer\", jsonData.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "regis-viewer",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "regis",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "regis-web",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "7bd76f37-e712-483c-82ba-5d1c337baa68",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8090/auth/realms/regis-realm/protocol/openid-connect/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"auth",
+						"realms",
+						"regis-realm",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "call user with user 'viewer'",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f4958a13-0a75-4bc6-8718-8de5556c89b3",
+						"exec": [
+							"pm.test(\"http status is 200 \", function() {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{local_token_viewer}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "call admin with user 'viewer'",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e6d5506f-480a-4a93-9269-f8c205db7dd7",
+						"exec": [
+							"pm.test(\"http status is 403 \", function() {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"function cleanup() {",
+							"    const clean = _.keys(pm.environment.toObject())",
+							"    _.each(clean, (arrItem) => {",
+							"        if (arrItem.startsWith(\"local_\")) {",
+							"            pm.environment.unset(arrItem)",
+							"        }",
+							"    })",
+							"}",
+							"",
+							"cleanup();"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer {{local_token_viewer}}"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/admin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7f73d423-3ad7-440e-bdd3-2b8cd1f0ecc0",
+						"exec": [
+							"pm.test(\"http status is 200 \", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"let jsonData = pm.response.json();",
+							"postman.setEnvironmentVariable(\"local_token\", jsonData.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "regis-viewer",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "regis",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "regis-web",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "7bd76f37-e712-483c-82ba-5d1c337baa68",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8090/auth/realms/regis-realm/protocol/openid-connect/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"auth",
+						"realms",
+						"regis-realm",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "userinfo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f4958a13-0a75-4bc6-8718-8de5556c89b3",
+						"exec": [
+							"pm.test(\"http status is 200 \", function() {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{local_token_admin}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8090/auth/realms/regis-realm/protocol/openid-connect/userinfo",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"auth",
+						"realms",
+						"regis-realm",
+						"protocol",
+						"openid-connect",
+						"userinfo"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
